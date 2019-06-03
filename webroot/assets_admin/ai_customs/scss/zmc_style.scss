@@ -1,0 +1,45 @@
+/*
+webroot/assets_admin/ai_customs/scss/zmc_style.scss
+Author  : Ardiansyah Iqbal
+Email   : aiqbalsyah@gmail.com
+Company : PT. Zamasco Mitra Solusindo
+*/
+.kt-checkbox{
+  & > span{
+    border: 1px solid #495057;
+  }
+}
+
+.text-muted{
+  color : #555 !important; 
+}
+
+.dropdown-menu > li > a > i, .dropdown-menu > .dropdown-item > i, .dropdown-menu > .dropdown-menu > i{
+  color : #333;
+}
+.dropdown-item{
+  color : #333;
+  & > i{
+    color : #333;
+  }
+  & > li {
+    & > a{
+      & > i{
+        color : #333;
+      }
+    }
+  }
+  &:hover{
+    color : #5578EA;
+    & > i{
+      color : #5578EA;
+    }
+    & > li {
+      & > a{
+        & > i{
+          color : #5578EA;
+        }
+      }
+    }
+  }
+}
