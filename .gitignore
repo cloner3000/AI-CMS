@@ -7,6 +7,7 @@
 /vendor/*
 /webroot/assets_admin/tools/node_modules/*
 /webroot/assets_admin/ai_customs/ckeditor/tools/node_modules/*
+/webroot/google_utils/*
 /webroot/img/media/*
 
 # OS generated files #
