@@ -14,6 +14,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Routing\Router;
 use Cake\Core\Configure;
+use Cake\Filesystem\Folder;
 
 class ContentsController extends AppController
 {
@@ -36,10 +37,10 @@ class ContentsController extends AppController
     
         if(isset($this->Security) && $this->request->isAjax() && ($this->action = 'index' || $this->action = 'delete')){
     
-            $this->Security->config('validatePost',false);
             //$this->getEventManager()->off($this->Csrf);
     
         }
+        $this->Security->config('validatePost',false);
     
     }
 
@@ -96,7 +97,9 @@ class ContentsController extends AppController
     {
         $record = $this->{$this->primaryModel}->get($id, [
             'contain' => [
-                'ContentsCategories'
+                'ContentsCategories',
+                'ContentsDataAttributes',
+                'ContentsDataAttributes.ContentsAttributes',
             ]
         ]);
 
@@ -119,12 +122,42 @@ class ContentsController extends AppController
     {
         $record = $this->{$this->primaryModel}->newEntity();
         if ($this->request->is('post')) {
-            $record = $this->{$this->primaryModel}->patchEntity($record, $this->request->getData());
-            if ($this->{$this->primaryModel}->save($record)) {
-                $this->Redis->destroyCacheContentsNodes();
-                $this->Flash->success(__($this->Utilities->message_alert($this->titleModule,1)));
-
-                return $this->redirect(['action' => 'index']);
+            $data =$this->request->getData();
+            $dataToUpload = [];
+            $prefix = date('dmyhi');
+            $pathFolderAttribute = WWW_ROOT.'assets'.DS.'contents_attributes'.DS.$prefix;
+            $saveDir = '/webroot/assets/contents_attributes/'.$prefix;
+            foreach($data['contents_data_attributes'] as $key => $cda){
+                if($cda['type'] == 'file'){
+                    if(!empty($cda['data']['name'])){
+                        $extension  = pathinfo($cda['data']['name'], PATHINFO_EXTENSION);
+                        $nameFile = rand(1000,200000).'.'.$extension;
+                        $saveDir = $saveDir.'/'.$cda['contents_attribute_id'];
+                        $pathFolderAttribute = $pathFolderAttribute.DS.$cda['contents_attribute_id'];
+                        $data['contents_data_attributes'][$key]['data'] = $saveDir.'/'.$nameFile;
+                        $dataToUpload[] = [
+                            'data' => $cda['data'],
+                            'pathFolderAttribute' => $pathFolderAttribute,
+                            'saveDir' => $saveDir,
+                            'nameFile' => $nameFile
+                        ];
+                    }
+                }
+            }
+            $record = $this->{$this->primaryModel}->patchEntity($record, $data);
+            if(empty($record->errors())){
+                
+                foreach($dataToUpload as $key => $cda){
+                    $dir = new Folder($cda['pathFolderAttribute'], true, 0755);
+                    move_uploaded_file($cda['data']['tmp_name'], $cda['pathFolderAttribute'].DS.$cda['nameFile']);
+                }
+                if ($this->{$this->primaryModel}->save($record)) {
+                    $this->Redis->destroyCacheContentsNodes();
+                    $this->Redis->destroyCacheLinksMaps();
+                    $this->Flash->success(__($this->Utilities->message_alert($this->titleModule,1)));
+    
+                    return $this->redirect(['action' => 'index']);
+                }
             }
             $this->Flash->error(__($this->Utilities->message_alert($this->titleModule,2)));
         }
@@ -156,7 +189,8 @@ class ContentsController extends AppController
     public function edit($id = null)
     {
         $record = $this->{$this->primaryModel}->get($id, [
-            'contain' => []
+            'contain' => [
+            ]
         ]);
         $contentsCategories = $this->{$this->primaryModel}->ContentsCategories->find('list',[
             'conditions' => [
@@ -170,17 +204,82 @@ class ContentsController extends AppController
                 'title' => 'ASC'
             ]
         ]);
+        if (!$this->request->is(['patch', 'post', 'put'])) {
+            $contentsAttributes = $this->{$this->primaryModel}->ContentsCategories->ContentsAttributes->find('all',[
+                'conditions' => [
+                    'contents_category_id' => $record->contents_category_id
+                ],
+            ])->leftJoinWith('ContentsDataAttributes',function($q) use($id){
+                return $q->where([
+                    'ContentsDataAttributes.content_id = '.$id,
+                ]);
+            })->select(
+                $this->{$this->primaryModel}->ContentsCategories->ContentsAttributes
+            )->select(
+                $this->{$this->primaryModel}->ContentsCategories->ContentsAttributes->ContentsDataAttributes
+            );
+        }
         if ($this->request->is(['patch', 'post', 'put'])) {
             $record = $this->{$this->primaryModel}->patchEntity($record, $this->request->getData());
-            if ($this->{$this->primaryModel}->save($record)) {
-                $this->Redis->destroyCacheContentsNodes();
-                $this->Flash->success(__($this->Utilities->message_alert($this->titleModule,3)));
-
-                return $this->redirect(['action' => 'index']);
+            $contentsAttributes = $this->{$this->primaryModel}->ContentsCategories->ContentsAttributes->find('all',[
+                'conditions' => [
+                    'contents_category_id' => $record->contents_category_id
+                ],
+            ])->leftJoinWith('ContentsDataAttributes',function($q) use($id){
+                return $q->where([
+                    'ContentsDataAttributes.content_id = '.$id,
+                ]);
+            })->select(
+                $this->{$this->primaryModel}->ContentsCategories->ContentsAttributes
+            )->select(
+                $this->{$this->primaryModel}->ContentsCategories->ContentsAttributes->ContentsDataAttributes
+            );
+            $data =$this->request->getData();
+            $dataToUpload = [];
+            $prefix = date('dmyhi');
+            $pathFolderAttribute = WWW_ROOT.'assets'.DS.'contents_attributes'.DS.$prefix;
+            $saveDir = '/webroot/assets/contents_attributes/'.$prefix;
+            $dataToDelete = [];
+            foreach($data['contents_data_attributes'] as $key => $cda){
+                if($cda['type'] == 'file'){
+                    if(!empty($cda['data']['name'])){
+                        $dataToDelete[] = $cda['contents_attribute_id'];
+                        $extension  = pathinfo($cda['data']['name'], PATHINFO_EXTENSION);
+                        $nameFile = rand(1000,200000).'.'.$extension;
+                        $saveDir = $saveDir.'/'.$cda['contents_attribute_id'];
+                        $pathFolderAttribute = $pathFolderAttribute.DS.$cda['contents_attribute_id'];
+                        $data['contents_data_attributes'][$key]['data'] = $saveDir.'/'.$nameFile;
+                        $dataToUpload[] = [
+                            'data' => $cda['data'],
+                            'pathFolderAttribute' => $pathFolderAttribute,
+                            'saveDir' => $saveDir,
+                            'nameFile' => $nameFile
+                        ];
+                    }else{
+                        unset($data['contents_data_attributes'][$key]);
+                    }
+                }else{
+                    $dataToDelete[] = $cda['contents_attribute_id'];
+                }
+            }
+            $record = $this->{$this->primaryModel}->patchEntity($record, $data);
+            if(empty($record->errors())){
+                $this->{$this->primaryModel}->ContentsDataAttributes->deleteAll(['content_id' => $id,'contents_attribute_id IN' => $dataToDelete]);
+                foreach($dataToUpload as $key => $cda){
+                    $dir = new Folder($cda['pathFolderAttribute'], true, 0755);
+                    move_uploaded_file($cda['data']['tmp_name'], $cda['pathFolderAttribute'].DS.$cda['nameFile']);
+                }
+                if ($this->{$this->primaryModel}->save($record)) {
+                    $this->Redis->destroyCacheContentsNodes();
+                    $this->Redis->destroyCacheLinksMaps();
+                    $this->Flash->success(__($this->Utilities->message_alert($this->titleModule,3)));
+    
+                    return $this->redirect(['action' => 'index']);
+                }
             }
             $this->Flash->error(__($this->Utilities->message_alert($this->titleModule,4)));
         }
-        $this->set(compact('record','contentsCategories'));
+        $this->set(compact('record','contentsCategories','contentsAttributes'));
         $titlesubModule = "Edit ".$this->titleModule;
         $breadCrumbs = [
             Router::url(['action' => 'index']) => "List ".$this->titleModule,
@@ -202,6 +301,7 @@ class ContentsController extends AppController
         $record = $this->{$this->primaryModel}->get($id);
         if ($this->{$this->primaryModel}->delete($record)) {
             $this->Redis->destroyCacheContentsNodes();
+            $this->Redis->destroyCacheLinksMaps();
             $code = 200;
             $message = __($this->Utilities->message_alert($this->titleModule,5));
             $status = 'success';

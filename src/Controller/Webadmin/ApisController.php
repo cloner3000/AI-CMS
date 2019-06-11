@@ -22,7 +22,8 @@ class ApisController extends AppController
         parent::initialize();
         $this->Auth->allow([
             'getToken',
-            'uploadMedia'
+            'uploadMedia',
+            'getContentAttributes'
         ]);
     }
     function beforeFilter(\Cake\Event\Event $event){
@@ -49,6 +50,18 @@ class ApisController extends AppController
         move_uploaded_file($data['tmp_name'],$uploadFolder);
         $url = Router::url($saveDir,true);
         return $this->response->withType('application/json')->withStringBody(json_encode(['default' => $url]));
+    }
+
+    public function getContentAttributes($id)
+    {
+        $this->loadModel('ContentsAttributes');
+        $record = $this->ContentsAttributes->find('all',[
+            'conditions' => [
+                'contents_category_id' => $id
+            ]
+        ]);
+        $this->set(compact('record'));
+        $this->set('_serialize','record');
     }
 
 }

@@ -47,6 +47,7 @@ use Cake\Core\Configure;
 Router::defaultRouteClass(DashedRoute::class);
 
 Router::scope('/', function (RouteBuilder $routes) {
+    $routes->setExtensions(['json', 'xml']);
     // Register scoped middleware for in scopes.
     $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
         'httpOnly' => true
@@ -74,6 +75,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     }
     $routes->connect('/:slug', ['controller' => 'Pages', 'action' => 'checkSlug'],['pass'=>['slug'],'_name'=>'checkSlug']);
     $routes->connect('/:content_category/:slug', ['controller' => 'Pages', 'action' => 'checkSlug'],['pass'=>['content_category','slug',],'_name'=>'checkSlugCategories']);
+    $routes->connect('/sitemap', ['controller' => 'Pages', 'action' => 'sitemap'],['pass'=>[],'_name'=>'sitemap']);
 
     /**
      * Connect catchall routes for all controllers.
@@ -104,17 +106,15 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->connect('/edit-profile', ['controller' => 'Default', 'action' => 'editProfile']);
         $routes->fallbacks(DashedRoute::class);
     });
+    Router::prefix('api', function (RouteBuilder $routes) {
+        $routes->setExtensions(['json', 'xml']);
+        //   $routes->applyMiddleware();
+            $routes->connect('/get-links/*', ['controller' => 'Links', 'action' => 'get']);
+            $routes->fallbacks(DashedRoute::class);
+      });
+    
     $routes->fallbacks(DashedRoute::class);
 });
 
-/**
- * If you need a different set of middleware or none at all,
- * open new scope and define routes there.
- *
- * ```
- * Router::scope('/api', function (RouteBuilder $routes) {
- *     // No $routes->applyMiddleware() here.
- *     // Connect API actions here.
- * });
- * ```
- */
+
+  

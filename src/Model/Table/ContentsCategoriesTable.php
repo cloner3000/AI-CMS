@@ -48,6 +48,12 @@ class ContentsCategoriesTable extends Table
             'cascadeCallbacks' => true,
         ]);
 
+        $this->hasMany('ContentsAttributes', [
+            'foreignKey' => 'contents_category_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
+
         $this->belongsTo('CreatedUsers', [
             'foreignKey' => 'created_by',
             'className'=>'Users'

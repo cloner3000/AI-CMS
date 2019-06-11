@@ -13,6 +13,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Controller\Component;
 use Cake\Cache\Cache;
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
+use Cake\Routing\Router;
 
 class UtilitiesComponent extends Component
 {
@@ -111,29 +113,55 @@ class UtilitiesComponent extends Component
         return $data;
     }
 
-    public function contentLoader($content,$request)
+    public function urlContentGenerator($content)
     {
-        if($content->contents_category_id == 1){
-            $controller = '\App\Controller\\'.'Pages'.'Controller';
-            $action     = 'loadPage';
-        }elseif($content->contents_category_id == 2){
+        if($content->contents_category_id == 2){
             $explodeParams = explode(":",$content->node);
             $controller = !empty($explodeParams[0]) ? $explodeParams[0] : '';
             $action = !empty($explodeParams[1]) ? $explodeParams[1] : 'index';
-            // dd($controller);
-            if(empty($controller)){
-                throw new NotFoundException();
-            }else{
-                $controller = "\App\Controller\\".$controller.'Controller';
-                $action     = $action;
-            }
+            $url = Router::url(['controller'=>$controller,'action'=>$action],true);
+        }elseif($content->contents_category_id == 1){
+            $url = Router::url(['_name' => 'checkSlug','slug'=>$content->slug],true);
         }else{
-            $controller = '\App\Controller\\'.'Pages'.'Controller';
-            $action     = 'loadContentCategoryPage';
+            $url = Router::url(['_name' => 'checkSlugCategories','slug'=>$content->slug,'content_category' => $content->contents_category->slug],true);
         }
-        // dd($controller);
-        $controllerLoader = new $controller;
-        return $controllerLoader;
+        return $url;
+    }
+
+    public function linksList($links)
+    {
+        $newLinks = [];
+        foreach($links as $key => $r){
+            $link = $this->generateUrlMenu($r);
+            $newLinks[$key] = [
+                'title' => $r['title'],
+                'url' => $link,
+                'target' => $r['target'],
+            ];
+            if(empty($r['children'])){
+                $newLinks[$key]['children'] = null;
+            }else{
+                $newLinks[$key]['children'] = $this->linksList($r['children']);
+            }
+        }
+        return $newLinks;
+    }
+
+    public function generateUrlMenu($link)
+    {
+        $url = "";
+        if($link['_type']=="CONTENT"):
+            $url = $link['content']['slug'];
+        elseif($link['_type'] == 'HEADER'):
+            $url = '#';
+        else:  
+            if(filter_var($link['url'], FILTER_VALIDATE_URL) == FALSE){
+                $url = $link['url'];
+            }else{
+                $url = $link['url'];
+            }
+        endif;
+        return $url;
     }
 }
 

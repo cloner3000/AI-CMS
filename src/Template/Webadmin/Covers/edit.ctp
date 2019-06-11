@@ -82,6 +82,36 @@
                                     'text'=>'Gambar'
                                 ],
                             ]);
+                            echo $this->Form->control('heading',[
+                                'class'=>'form-control m-input',
+                                'templateVars' => [
+                                    'colsize' => 'col-lg-4 col-xl-6',
+                                ],
+                                'label' => [
+                                    'class'=> 'col-lg-2 col-xl-2 col-md-4 col-form-label',
+                                    'text'=>'Heading'
+                                ],
+                            ]);
+                            echo $this->Form->control('description',[
+                                'class'=>'form-control m-input',
+                                'templateVars' => [
+                                    'colsize' => 'col-lg-4 col-xl-6',
+                                ],
+                                'label' => [
+                                    'class'=> 'col-lg-2 col-xl-2 col-md-4 col-form-label',
+                                    'text'=>'Description'
+                                ],
+                            ]);
+                            echo $this->Form->control('url',[
+                                'class'=>'form-control m-input',
+                                'templateVars' => [
+                                    'colsize' => 'col-lg-4 col-xl-6',
+                                ],
+                                'label' => [
+                                    'class'=> 'col-lg-2 col-xl-2 col-md-4 col-form-label',
+                                    'text'=>'URL'
+                                ],
+                            ]);
                             echo $this->Form->control('status',[
                                 'class'=>'form-control m-input',
                                 'templateVars' => [

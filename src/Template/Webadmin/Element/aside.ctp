@@ -68,6 +68,7 @@
                 <?php 
                     $countCheckSideBar = $this->Utilities->sideBarArrayCheck($sidebarList,[
                         'ContentsCategories',
+                        'ContentsAttributes',
                         'Contents',
                         'LinksMaps',
                         'Links',
@@ -85,6 +86,11 @@
                             'label' => 'Kategori Konten',
                             'icon' => 'flaticon-web',
                             'url'  => $this->Url->build(['controller'=>'ContentsCategories','action'=>'index'])
+                        ],
+                        'ContentsAttributes' => (object)[
+                            'label' => 'Attribute Kategori Konten',
+                            'icon' => 'flaticon-web',
+                            'url'  => $this->Url->build(['controller'=>'ContentsAttributes','action'=>'index'])
                         ],
                         'Contents' => (object)[
                             'label' => 'Konten',

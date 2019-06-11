@@ -36,6 +36,7 @@
 				</div>
 			</div>
 			<!--begin::Form-->
+            <?php $this->Form->unlockField('contents_data_attributes');?>
 			<?= $this->Form->create($record,['class'=>'kt-form','type'=>'file']) ?>
 				<div class="kt-portlet__body">
 					<div class="kt-section kt-section--first">
@@ -203,14 +204,86 @@ $this->Html->script([
 ],['block'=>'jsPageVendors','pathPrefix' => '/assets_admin/']);?>
 <?php $this->start('script');?>
     <script>
-        
+        function isJson(str){
+            try {
+                JSON.parse(str);
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
         $("#contents-category-id").on('change',function(e){
+            $(".kt-section-attribute").remove();
             if($(this).val() == 2){
                 $(".node-row").show()
                 $(".row-body").hide()
             }else{
                 $(".node-row").hide()
                 $(".row-body").show()
+                if($(this).val() != 1 && $(this).val().length > 0){
+                    $.ajax({
+                        url : "<?=$this->Url->build(['controller'=>'Apis','action'=>'getContentAttributes']);?>/"+$(this).val(),
+                        dataType : "json",
+                        success : function(response){
+                            var dataAttributes = "";
+                            $.each(response,function(e,item){
+                                var inputValidation = [];
+                                var validations = item.validations;
+                                var requiredInput = false; 
+                                if(validations != ""){
+                                    var checkValidations = validations.split("|");
+                                    $.each(checkValidations,function(k,vItem){
+                                        var valid = vItem.split(":");
+                                        var validator = valid[0];
+                                        var value_validator = valid[1];
+                                        if(validator == "required" && value_validator == "true"){
+                                            requiredInput = true;
+                                        }
+                                        inputValidation[validator] = value_validator;
+                                    })
+                                }
+                                var inputData = "";
+                                var defaultValidation = (requiredInput ? 'required="required"' : '')+' '+(inputValidation['maxlength'] != undefined ? 'maxlength="'+inputValidation['maxlength']+'"' : '');
+                                if(item.type == "text"){
+                                    inputData = '<input type="text" name="contents_data_attributes['+e+'][data]" class="form-control m-input" '+defaultValidation+'>';
+                                }
+                                if(item.type == "file"){
+                                    inputData = '<input type="file" name="contents_data_attributes['+e+'][data]" class="form-control m-input" '+defaultValidation+'>';
+                                }
+                                if(item.type == "long_text"){
+                                    inputData = '<textarea name="contents_data_attributes['+e+'][data]" class="form-control m-input" '+defaultValidation+'></textarea>';
+                                }
+                                if(item.type == "list"){
+                                    inputData = '<select name="contents_data_attributes['+e+'][data]" class="form-control m-input" '+defaultValidation+'>'
+                                    if(item.options != ""){
+                                        if(isJson(item.options)){
+                                            var obj =JSON.parse(item.options);
+                                            $.each(obj, function(k_opt,opt){
+                                                inputData += '<option value="'+k_opt+'">'+opt+'</option>'
+                                            })
+                                        }
+                                    }
+                                    inputData +='</select>';
+                                }
+                                inputData += '<input type="hidden" name="contents_data_attributes['+e+'][contents_attribute_id]" class="form-control m-input" value="'+item.id+'">'
+                                inputData += '<input type="hidden" name="contents_data_attributes['+e+'][type]" class="form-control m-input" value="'+item.type+'">';
+                                dataAttributes +=   '<div class="row">'
+                                        +'<div class="col-md-12">'
+                                        +'<div class="form-group row">'
+                                        +'<label class="col-lg-2 col-md-2 col-form-label">'+item.label+' '+(requiredInput ? '*' : '')+'</label>'
+                                        +'<div class="col-lg-10 col-md-10">'
+                                        +inputData
+                                        +'</div>'
+                                        +'</div>'
+                                        +'</div>'
+                                        +'</div>'
+                            })
+                            if(dataAttributes != ""){
+                                $(".kt-portlet__body").append('<div class="kt-section kt-section-attribute">'+dataAttributes+'</div>')
+                            }
+                        }
+                    })
+                }
             }
         })
         

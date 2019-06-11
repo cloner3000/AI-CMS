@@ -4,28 +4,22 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Content Entity
+ * ContentsAttribute Entity
  *
  * @property int $id
  * @property int $contents_category_id
- * @property string|null $title
- * @property string|null $slug
- * @property string|null $picture
- * @property string|null $picture_dir
- * @property string|null $body
- * @property bool|null $status
- * @property int|null $sort
- * @property string|null $meta_description
- * @property string|null $meta_keyword
- * @property int|null $created_by
+ * @property string $type
+ * @property string $label
+ * @property string|null $validations
  * @property \Cake\I18n\FrozenTime|null $created
- * @property int|null $modified_by
+ * @property int|null $created_by
  * @property \Cake\I18n\FrozenTime|null $modified
+ * @property int|null $modified_by
  *
  * @property \App\Model\Entity\ContentsCategory $contents_category
- * @property \App\Model\Entity\Link[] $links
+ * @property \App\Model\Entity\ContentsDataAttribute[] $contents_data_attributes
  */
-class Content extends Entity
+class ContentsAttribute extends Entity
 {
 
     /**
@@ -39,22 +33,15 @@ class Content extends Entity
      */
     protected $_accessible = [
         'contents_category_id' => true,
-        'node' => true,
-        'title' => true,
-        'slug' => true,
-        'picture' => true,
-        'picture_dir' => true,
-        'body' => true,
-        'status' => true,
-        'sort' => true,
-        'meta_description' => true,
-        'meta_keyword' => true,
-        'created_by' => true,
+        'type' => true,
+        'label' => true,
+        'validations' => true,
+        'options' => true,
         'created' => true,
-        'modified_by' => true,
+        'created_by' => true,
         'modified' => true,
+        'modified_by' => true,
         'contents_category' => true,
-        'links' => true,
         'contents_data_attributes' => true
     ];
 }

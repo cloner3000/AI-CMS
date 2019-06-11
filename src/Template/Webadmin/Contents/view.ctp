@@ -78,6 +78,28 @@
                         <th scope="row"><?= __('Meta Description') ?></th>
                         <td><?= h($record->meta_description) ?></td>
                     </tr>
+                    <?php if(!empty($record->contents_data_attributes)):?>
+                        <?php foreach($record->contents_data_attributes as $key => $cda):?>
+                            <tr>
+                                <th scope="row"><?= __($cda->contents_attribute->label) ?></th>
+                                <td>
+                                    <?php if($cda->contents_attribute->type == "text" || $cda->contents_attribute->type == "long_text"):?>
+                                        <?=$cda->data;?>
+                                    <?php elseif($cda->contents_attribute->type == "list"):?>
+                                        <?php 
+                                            if($cda->contents_attribute->options != ""):
+                                                $decode = json_decode($cda->contents_attribute->options);
+                                                $data = $cda->data;
+                                                echo $decode->$data;
+                                            endif;
+                                        ?>
+                                    <?php elseif($cda->contents_attribute->type == "file"):?>
+                                       <a href="<?=$this->Utilities->generateUrlAsset(null,$cda->data);?>" target="_blank"><i class="fa fa-eye"></i> Lihat</a>
+                                    <?php endif;?>
+                                </td>
+                            </tr>
+                        <?php endforeach;?>
+                    <?php endif;?>
                     <tr>
                         <th scope="row"><?= __('Created') ?></th>
                         <td><?= h($record->created) ?></td>

@@ -58,4 +58,55 @@ class PagesController extends AppController
     public function loadPage($content){
         $this->render('loadPage');
     }
+
+    public function sitemap()
+    {
+        $this->loadModel('Contents');
+        $url = [];
+        //HOME CONTENT FOR PRIORITY 1//
+        $homeContent = $this->Contents->find('all',[
+            'conditions' => [
+                'Contents.status' => 1,
+                'Contents.slug' => $this->defaultWebSettings['Web.FirstPage']
+            ],
+            'contain' => [
+                'ContentsCategories'
+            ]
+        ])->first();
+        if(!empty($homeContent)){
+            $url[] = [
+                'loc' => $this->Utilities->urlContentGenerator($homeContent),
+                'lastmod' => (!empty($homeContent->modified) ? $homeContent->modified->format('Y-m-d') : $homeContent->created->format('Y-m-d')),
+                'changefreq' => 'daily',
+                'priory' => 1,
+            ];
+        }
+        $contents = $this->Contents->find('all',[
+            'conditions' => [
+                'Contents.status' => 1,
+                'Contents.slug !=' => $this->defaultWebSettings['Web.FirstPage']
+            ],
+            'contain' => [
+                'ContentsCategories'
+            ],
+            'order' => [
+                'Contents.contents_category_id' => 'ASC'
+            ]
+        ]);
+        foreach($contents as $key=> $content){
+            $url[] = [
+                'loc' => $this->Utilities->urlContentGenerator($content),
+                'lastmod' => (!empty($content->modified) ? $content->modified->format('Y-m-d') : $content->created->format('Y-m-d')),
+                'changefreq' => 'daily',
+                'priory' => 0.8,
+            ];
+        }
+        $this->set('_rootNode', 'urlset');
+        $this->set([
+            // Define an attribute on the root node.
+            '@xmlns' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
+            'url' => $url
+        ]);
+        $this->set('_serialize', ['@xmlns', 'url']);
+    }
 }

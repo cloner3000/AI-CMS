@@ -55,6 +55,12 @@ class ContentsTable extends Table
             'cascadeCallbacks' => true,
         ]);
 
+        $this->hasMany('ContentsDataAttributes', [
+            'foreignKey' => 'content_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
+
         $this->belongsTo('CreatedUsers', [
             'foreignKey' => 'created_by',
             'className'=>'Users'
@@ -165,7 +171,6 @@ class ContentsTable extends Table
             ->allowEmptyString('slug');
 
         $validator
-            ->requirePresence('picture', 'create')
             ->add('picture', 'file', [
             'rule' => ['mimeType', ['image/jpeg', 'image/png']],
             'on' => function ($context) {

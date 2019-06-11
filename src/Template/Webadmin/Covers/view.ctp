@@ -55,6 +55,18 @@
                         <td><img src="<?= $this->Utilities->generateUrlAsset($record->file_dir,$record->file,$defaultAppSettings['Cover.LG'].'_') ?>" class="img-fluid"></td>
                     </tr>
                     <tr>
+                        <th scope="row"><?= __('Heading') ?></th>
+                        <td><?= h($record->heading) ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?= __('Description') ?></th>
+                        <td><?= h($record->description) ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?= __('URL') ?></th>
+                        <td><?= h($record->url) ?></td>
+                    </tr>
+                    <tr>
                         <th scope="row"><?= __('Created') ?></th>
                         <td><?= h($record->created) ?></td>
                     </tr>

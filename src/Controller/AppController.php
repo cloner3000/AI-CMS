@@ -112,36 +112,41 @@ class AppController extends Controller
                 
                 $this->set(compact('userData','userId','sidebarList'));
             }
+        }elseif($this->request->prefix == "api"){
+            
         }else{
-            $linksMaps = $this->Redis->readCacheLinksMaps();
-            $this->firstPage = $defaultWebSettings['Web.FirstPage'];
-            if($this->request->_name == 'home'){
-                $this->slug = $this->firstPage;
-            }else{
-                $this->slug = $this->request->slug;
+            if($this->request->_name != 'sitemap'){
+                $linksMaps = $this->Redis->readCacheLinksMaps();
+                $this->firstPage = $defaultWebSettings['Web.FirstPage'];
+                if($this->request->_name == 'home'){
+                    $this->slug = $this->firstPage;
+                }else{
+                    $this->slug = $this->request->slug;
+                }
+                $this->loadModel('Covers');
+                $covers = $this->Covers->find('all',[
+                    'conditions' => [
+                        'slug' => $this->slug
+                    ]
+                ]);
+                $this->loadModel('Contents');
+                $content = $this->Contents->find('all',[
+                    'conditions' => [
+                        'Contents.slug' => $this->slug
+                    ],
+                    'contain' => [
+                        'ContentsCategories'
+                    ]
+                ])->first();
+                if(empty($content)){
+                    // throw new NotFoundException();
+                }else{
+                    $this->contentData = $content;
+                    
+                }
+                $this->set(compact('linksMaps','covers','content'));
             }
-            $this->loadModel('Covers');
-            $covers = $this->Covers->find('all',[
-                'conditions' => [
-                    'slug' => $this->slug
-                ]
-            ]);
-            $this->loadModel('Contents');
-            $content = $this->Contents->find('all',[
-                'conditions' => [
-                    'Contents.slug' => $this->slug
-                ],
-                'contain' => [
-                    'ContentsCategories'
-                ]
-            ])->first();
-            if(empty($content)){
-                throw new NotFoundException();
-            }else{
-                $this->contentData = $content;
-                
-            }
-            $this->set(compact('linksMaps','covers','content'));
+            
         }
     }
 
@@ -187,14 +192,6 @@ class AppController extends Controller
     }
     public function beforeRender(\Cake\Event\Event $event)
     {
-        if($this->request->prefix != "webadmin"){
-            $this->loadModel('Covers');
-            $covers = $this->Covers->find('all',[
-                'conditions' => [
-                    'slug' => $this->slug
-                ]
-            ]);
-            $this->set(compact('covers'));
-        }
+       
     }
 }
