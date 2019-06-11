@@ -88,7 +88,7 @@ class ContentsCategoriesTable extends Table
     public function beforeSave(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, 
     \ArrayObject $options)
     {
-        $slug = Inflector::slug($entity->title);
+        $slug = Inflector::slug(strtolower($entity->title));
         $entity->slug = strtolower($slug);
         return true;
     }
