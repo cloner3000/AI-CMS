@@ -47,8 +47,11 @@ class ContentsAttributesTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->hasMany('ContentsDataAttributes', [
-            'foreignKey' => 'contents_attribute_id'
+            'foreignKey' => 'contents_attribute_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
         ]);
+        
     }
 
     /**

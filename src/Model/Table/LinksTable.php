@@ -81,7 +81,7 @@ class LinksTable extends Table
                 'fields' => [
                     'dir' => 'picture_dir',
                 ],
-                'path' => 'webroot{DS}assets{DS}img{DS}links{DS}{year}{DS}{month}',
+                'path' => 'webroot{DS}assets{DS}uploaded_data{DS}img{DS}links{DS}{year}{DS}{month}',
                 'transformer' =>  function ($table, $entity, $data, $field, $settings) {
                     $imagineComponent = new Imagine;
 

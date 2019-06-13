@@ -63,7 +63,7 @@
                             if(viewUrl != ""){
                                 listLink += '<a class="dropdown-item" href="'+viewUrl+id+'"><i class="la la-search-plus"></i> View</a>\n ';
                             }
-                            if(listLink != "" && (id != 1 && id != 2)){
+                            if(listLink != "" && (id > 4)){
                                 return'\n<span class="dropdown">\n'
                                 + '\n<a href="#" class="btn btn-sm btn-primary btn-icon btn-icon-md\n'
                                 + '" data-toggle="dropdown"'

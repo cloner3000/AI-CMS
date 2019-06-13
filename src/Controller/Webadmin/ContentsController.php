@@ -125,8 +125,8 @@ class ContentsController extends AppController
             $data =$this->request->getData();
             $dataToUpload = [];
             $prefix = date('dmyhi');
-            $pathFolderAttribute = WWW_ROOT.'assets'.DS.'contents_attributes'.DS.$prefix;
-            $saveDir = '/webroot/assets/contents_attributes/'.$prefix;
+            $pathFolderAttribute = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'contents_attributes'.DS.$prefix;
+            $saveDir = '/webroot/assets/uploaded_data/contents_attributes/'.$prefix;
             foreach($data['contents_data_attributes'] as $key => $cda){
                 if($cda['type'] == 'file'){
                     if(!empty($cda['data']['name'])){
@@ -237,8 +237,8 @@ class ContentsController extends AppController
             $data =$this->request->getData();
             $dataToUpload = [];
             $prefix = date('dmyhi');
-            $pathFolderAttribute = WWW_ROOT.'assets'.DS.'contents_attributes'.DS.$prefix;
-            $saveDir = '/webroot/assets/contents_attributes/'.$prefix;
+            $pathFolderAttribute = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'contents_attributes'.DS.$prefix;
+            $saveDir = '/webroot/assets/uploaded_data/contents_attributes/'.$prefix;
             $dataToDelete = [];
             foreach($data['contents_data_attributes'] as $key => $cda){
                 if($cda['type'] == 'file'){

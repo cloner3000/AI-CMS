@@ -69,8 +69,8 @@ class AppSettingsController extends AppController
                     if($w == 'App_Logo'){
                         $source = $d['tmp_name'];
                         if(!empty($source)){
-                            $uploadFolder = WWW_ROOT.DS.'img'.DS.'admin'.DS.'logo';
-                            $saveDir = '/webroot/img/admin/logo';
+                            $uploadFolder = WWW_ROOT.DS.'uploaded_data'.DS.'admin'.DS.'logo';
+                            $saveDir = '/webroot/uploaded_data/admin/logo';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -82,8 +82,8 @@ class AppSettingsController extends AppController
                     }elseif($w == 'App_Logo_Login'){
                         $source = $d['tmp_name'];
                         if(!empty($source)){
-                            $uploadFolder = WWW_ROOT.DS.'img'.DS.'admin'.DS.'logo_login';
-                            $saveDir = '/webroot/img/admin/logo_login';
+                            $uploadFolder = WWW_ROOT.DS.'uploaded_data'.DS.'admin'.DS.'logo_login';
+                            $saveDir = '/webroot/uploaded_data/admin/logo_login';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -95,8 +95,8 @@ class AppSettingsController extends AppController
                     }elseif($w == 'App_Favico'){
                         $source = $d['tmp_name'];
                         if(!empty($source)){
-                            $uploadFolder = WWW_ROOT.DS.'img'.DS.'admin'.DS.'favico';
-                            $saveDir = '/webroot/img/admin/favico';
+                            $uploadFolder = WWW_ROOT.DS.'uploaded_data'.DS.'admin'.DS.'favico';
+                            $saveDir = '/webroot/uploaded_data/admin/favico';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;

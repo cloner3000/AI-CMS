@@ -61,6 +61,12 @@ class ContentsTable extends Table
             'cascadeCallbacks' => true,
         ]);
 
+        $this->hasMany('ContentsFiles', [
+            'foreignKey' => 'content_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
+
         $this->belongsTo('CreatedUsers', [
             'foreignKey' => 'created_by',
             'className'=>'Users'
@@ -74,7 +80,7 @@ class ContentsTable extends Table
                 'fields' => [
                     'dir' => 'picture_dir',
                 ],
-                'path' => 'webroot{DS}assets{DS}img{DS}contents{DS}{year}{DS}{month}',
+                'path' => 'webroot{DS}assets{DS}uploaded_data{DS}img{DS}contents{DS}{year}{DS}{month}',
                 'transformer' =>  function ($table, $entity, $data, $field, $settings) {
                     $imagineComponent = new Imagine;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * App\src\Controller\Webadmin\ContentsAttributesController.php
+ * App\src\Controller\Webadmin\GalleryController.php
  * Don't Remove this signature if you love code 
  * Code For Easy
  * =================================================================
@@ -14,16 +14,17 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Routing\Router;
 
-class ContentsAttributesController extends AppController
+class GalleryController extends AppController
 {
 
-    private $titleModule = "Atribut Kategori Konten";
-    private $primaryModel = "ContentsAttributes";
+    private $titleModule = "Gallery";
+    private $primaryModel = "ContentsFiles";
 
 
     public function initialize()
     {
         parent::initialize();
+        $this->loadModel($primaryModel);
         $this->set([
             'titleModule' => $this->titleModule,
             'primaryModel' => $this->primaryModel,
@@ -53,18 +54,13 @@ class ContentsAttributesController extends AppController
             $source = $this->{$this->primaryModel};
             $searchAble = [
                 $this->primaryModel.'.id',
-                $this->primaryModel.'.type',
-                $this->primaryModel.'.label',
-                'ContentsCategories.title',
+                $this->primaryModel.'.name'
             ];
             $data = [
                 'source'=>$source,
                 'searchAble' => $searchAble,
                 'defaultField' => $this->primaryModel.'.id',
                 'defaultSort' => 'desc',
-                'contain' => [
-                    'ContentsCategories'
-                ]
                     
             ];
             $dataTable   = $this->Datatables->make($data);  
@@ -95,9 +91,7 @@ class ContentsAttributesController extends AppController
     public function view($id = null)
     {
         $record = $this->{$this->primaryModel}->get($id, [
-            'contain' => [
-                'ContentsCategories'
-            ]
+            'contain' => []
         ]);
 
         $this->set('record', $record);
@@ -127,17 +121,7 @@ class ContentsAttributesController extends AppController
             }
             $this->Flash->error(__($this->Utilities->message_alert($this->titleModule,2)));
         }
-        $contentsCategories = $this->{$this->primaryModel}->ContentsCategories->find('list',[
-            'conditions' => [
-                'status' => 1,
-                'id NOT IN' => [1,2,3,4]
-            ],
-            'order' => [
-                'id' => 'ASC',
-                'title' => 'ASC'
-            ]
-        ]);
-        $this->set(compact('record','contentsCategories'));
+        $this->set(compact('record'));
         $titlesubModule = "Tambah ".$this->titleModule;
         $breadCrumbs = [
             Router::url(['action' => 'index']) => "List ".$this->titleModule,
@@ -158,19 +142,6 @@ class ContentsAttributesController extends AppController
         $record = $this->{$this->primaryModel}->get($id, [
             'contain' => []
         ]);
-        $contentsCategories = $this->{$this->primaryModel}->ContentsCategories->find('list',[
-            'conditions' => [
-                'id NOT IN' => [1,2,3,4],
-                'OR' => [
-                    'status' => 1,
-                    'id' => $record->contents_category_id
-                ]
-            ],
-            'order' => [
-                'id' => 'ASC',
-                'title' => 'ASC'
-            ]
-        ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $record = $this->{$this->primaryModel}->patchEntity($record, $this->request->getData());
             if ($this->{$this->primaryModel}->save($record)) {
@@ -180,7 +151,7 @@ class ContentsAttributesController extends AppController
             }
             $this->Flash->error(__($this->Utilities->message_alert($this->titleModule,4)));
         }
-        $this->set(compact('record','contentsCategories'));
+        $this->set(compact('record'));
         $titlesubModule = "Edit ".$this->titleModule;
         $breadCrumbs = [
             Router::url(['action' => 'index']) => "List ".$this->titleModule,

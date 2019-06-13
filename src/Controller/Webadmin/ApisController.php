@@ -44,8 +44,8 @@ class ApisController extends AppController
     public function uploadMedia()
     {
         $data = $this->request->data['file'];
-        $uploadFolder = WWW_ROOT.'assets'.DS.'img'.DS.'media/'.$data['name'];
-        $saveDir = '/assets/img/media/'.$data['name'];
+        $uploadFolder = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'media'.DS.$data['name'];
+        $saveDir = '/assets/uploaded_data/media/'.$data['name'];
         $extension  = pathinfo($data['name'], PATHINFO_EXTENSION);
         move_uploaded_file($data['tmp_name'],$uploadFolder);
         $url = Router::url($saveDir,true);

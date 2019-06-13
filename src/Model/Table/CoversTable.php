@@ -53,7 +53,7 @@ class CoversTable extends Table
                 'fields' => [
                     'dir' => 'file_dir',
                 ],
-                'path' => 'webroot{DS}assets{DS}img{DS}covers{DS}{year}{DS}{month}',
+                'path' => 'webroot{DS}assets{DS}uploaded_data{DS}img{DS}covers{DS}{year}{DS}{month}',
                 'transformer' =>  function ($table, $entity, $data, $field, $settings) {
                     $imagineComponent = new Imagine;
 

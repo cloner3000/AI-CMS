@@ -70,7 +70,7 @@ class WebSettingsController extends AppController
                         $source = $d['tmp_name'];
                         if(!empty($source)){
                             $uploadFolder = WWW_ROOT.DS.'img'.DS.'logo';
-                            $saveDir = '/webroot/img/logo';
+                            $saveDir = '/webroot/assets/uploaded_data/img/logo';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -83,7 +83,7 @@ class WebSettingsController extends AppController
                         $source = $d['tmp_name'];
                         if(!empty($source)){
                             $uploadFolder = WWW_ROOT.DS.'img'.DS.'favico';
-                            $saveDir = '/webroot/img/favico';
+                            $saveDir = '/webroot/assets/uploaded_data/img/favico';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -92,8 +92,8 @@ class WebSettingsController extends AppController
                             $this->Imagine->gdImageCropAndSave($source, $tmp,['width'=>$width,'height'=>$height]);
                             $valueSave = $saveDir;
                             $dSource = $source;
-                            $uploadFolder = WWW_ROOT.'img'.DS.'apple-touch-icon-144x144-precomposed';
-                            $saveDir = '/webroot/img/apple-touch-icon-144x144-precomposed';
+                            $uploadFolder = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'img'.DS.'apple-touch-icon-144x144-precomposed';
+                            $saveDir = '/webroot/assets/uploaded_data/img/apple-touch-icon-144x144-precomposed';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -103,8 +103,8 @@ class WebSettingsController extends AppController
 
                             
                             $dSource = $source;
-                            $uploadFolder = WWW_ROOT.'img'.DS.'apple-touch-icon-120x120-precomposed';
-                            $saveDir = '/webroot/img/apple-touch-icon-120x120-precomposed';
+                            $uploadFolder = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'img'.DS.'apple-touch-icon-120x120-precomposed';
+                            $saveDir = '/webroot/assets/uploaded_data/img/apple-touch-icon-120x120-precomposed';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -113,8 +113,8 @@ class WebSettingsController extends AppController
                             $this->Imagine->gdImageCropAndSave($dSource, $tmp,['width'=>$width,'height'=>$height]);
 
                             $dSource = $source;
-                            $uploadFolder = WWW_ROOT.'img'.DS.'apple-touch-icon-114x114-precomposed';
-                            $saveDir = '/webroot/img/apple-touch-icon-114x114-precomposed';
+                            $uploadFolder = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'img'.DS.'apple-touch-icon-114x114-precomposed';
+                            $saveDir = '/webroot/assets/uploaded_data/img/apple-touch-icon-114x114-precomposed';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -123,8 +123,8 @@ class WebSettingsController extends AppController
                             $this->Imagine->gdImageCropAndSave($dSource, $tmp,['width'=>$width,'height'=>$height]);
 
                             $dSource = $source;
-                            $uploadFolder = WWW_ROOT.'img'.DS.'apple-touch-icon-72x72-precomposed';
-                            $saveDir = '/webroot/img/apple-touch-icon-72x72-precomposed';
+                            $uploadFolder = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'img'.DS.'apple-touch-icon-72x72-precomposed';
+                            $saveDir = '/webroot/assets/uploaded_data/img/apple-touch-icon-72x72-precomposed';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
@@ -134,8 +134,8 @@ class WebSettingsController extends AppController
                             
 
                             $dSource = $source;
-                            $uploadFolder = WWW_ROOT.'img'.DS.'apple-touch-icon-57x57-precomposed';
-                            $saveDir = '/webroot/img/apple-touch-icon-57x57-precomposed';
+                            $uploadFolder = WWW_ROOT.'assets'.DS.'uploaded_data'.DS.'img'.DS.'apple-touch-icon-57x57-precomposed';
+                            $saveDir = '/webroot/assets/uploaded_data/img/apple-touch-icon-57x57-precomposed';
                             $extension  = pathinfo($d['name'], PATHINFO_EXTENSION);
                             $tmp        = $uploadFolder.'.'. $extension;
                             $saveDir    = $saveDir.'.'.$extension;
